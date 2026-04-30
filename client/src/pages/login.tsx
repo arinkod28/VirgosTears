@@ -10,6 +10,11 @@ const GLSLHills = dynamic(
   { ssr: false }
 );
 
+const CursorDrivenParticleTypography = dynamic(
+  () => import('../components/ui/cursor-driven-particles-typography').then((m) => ({ default: m.CursorDrivenParticleTypography })),
+  { ssr: false }
+);
+
 const PASSWORD = 'flipstingray';
 
 export default function LoginPage() {
@@ -53,7 +58,20 @@ export default function LoginPage() {
       />
 
       {/* Login card */}
-      <div className="absolute inset-0 z-10 flex items-center justify-center p-4">
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-lg mb-12">
+          {/* AuditX Particle Typography */}
+          <div className="h-48">
+            <CursorDrivenParticleTypography
+              text="AuditX"
+              fontSize={140}
+              particleDensity={5}
+              dispersionStrength={20}
+              color="#60a5fa"
+            />
+          </div>
+        </div>
+        
         <div className="w-full max-w-sm">
           {/* Badge */}
           <div className="mb-6 flex justify-center">
