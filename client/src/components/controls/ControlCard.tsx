@@ -11,11 +11,11 @@ interface Props {
 }
 
 const STATUS_CONFIG: Record<ControlStatus, { label: string; bg: string; dot: string }> = {
-  pass: { label: 'PASS', bg: 'bg-green-500/30 border-green-500/70', dot: 'bg-green-500' },
-  fail: { label: 'FAIL', bg: 'bg-red-500/30 border-red-500/70', dot: 'bg-red-500' },
-  warning: { label: 'WARNING', bg: 'bg-amber-500/30 border-amber-500/70', dot: 'bg-amber-500' },
-  error: { label: 'ERROR', bg: 'bg-slate-500/30 border-slate-500/70', dot: 'bg-slate-500' },
-  pending: { label: 'PENDING', bg: 'bg-slate-500/30 border-slate-500/70', dot: 'bg-slate-600' },
+  pass: { label: 'PASS', bg: 'bg-green-950 border-green-700', dot: 'bg-green-500' },
+  fail: { label: 'FAIL', bg: 'bg-red-950 border-red-700', dot: 'bg-red-500' },
+  warning: { label: 'WARNING', bg: 'bg-amber-950 border-amber-700', dot: 'bg-amber-500' },
+  error: { label: 'ERROR', bg: 'bg-slate-800 border-slate-600', dot: 'bg-slate-500' },
+  pending: { label: 'PENDING', bg: 'bg-slate-800 border-slate-600', dot: 'bg-slate-600' },
 };
 
 export default function ControlCard({
@@ -59,7 +59,7 @@ export default function ControlCard({
         </div>
       )}
 
-      <div className="flex items-center justify-between pt-3 border-t border-white/5">
+      <div className="flex items-center justify-between pt-3 border-t border-navy-600">
         {evidenceHash ? (
           <code className="text-[10px] text-slate-500 font-mono truncate max-w-[200px]">
             SHA-256: {evidenceHash.slice(0, 16)}&hellip;
