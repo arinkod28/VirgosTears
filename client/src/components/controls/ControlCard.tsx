@@ -11,11 +11,11 @@ interface Props {
 }
 
 const STATUS_CONFIG: Record<ControlStatus, { label: string; bg: string; dot: string }> = {
-  pass: { label: 'PASS', bg: 'bg-green-500/10 border-green-500/30', dot: 'bg-green-500' },
-  fail: { label: 'FAIL', bg: 'bg-red-500/10 border-red-500/30', dot: 'bg-red-500' },
-  warning: { label: 'WARNING', bg: 'bg-amber-500/10 border-amber-500/30', dot: 'bg-amber-500' },
-  error: { label: 'ERROR', bg: 'bg-slate-500/10 border-slate-500/30', dot: 'bg-slate-500' },
-  pending: { label: 'PENDING', bg: 'bg-slate-500/10 border-slate-500/30', dot: 'bg-slate-600' },
+  pass: { label: 'PASS', bg: 'bg-green-500/20 border-green-500/50', dot: 'bg-green-500' },
+  fail: { label: 'FAIL', bg: 'bg-red-500/20 border-red-500/50', dot: 'bg-red-500' },
+  warning: { label: 'WARNING', bg: 'bg-amber-500/20 border-amber-500/50', dot: 'bg-amber-500' },
+  error: { label: 'ERROR', bg: 'bg-slate-500/20 border-slate-500/50', dot: 'bg-slate-500' },
+  pending: { label: 'PENDING', bg: 'bg-slate-500/20 border-slate-500/50', dot: 'bg-slate-600' },
 };
 
 export default function ControlCard({

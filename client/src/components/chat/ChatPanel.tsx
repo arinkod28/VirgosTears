@@ -32,8 +32,8 @@ export default function ChatPanel({ messages, loading, error, onSend, onClear }:
   ];
 
   return (
-    <div className="bg-navy-800 border border-navy-600 rounded-lg flex flex-col h-[600px]">
-      <div className="flex items-center justify-between p-4 border-b border-navy-600">
+    <div className="bg-navy-800/90 border border-navy-500/60 rounded-lg flex flex-col h-[600px] backdrop-blur-sm">
+      <div className="flex items-center justify-between p-4 border-b border-navy-500/40">
         <div>
           <h3 className="text-sm font-semibold">AI Compliance Assistant</h3>
           <p className="text-xs text-slate-500">Ask for evidence, explanations, or control status</p>

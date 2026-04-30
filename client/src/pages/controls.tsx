@@ -3,20 +3,20 @@ import AppLayout from '../components/layout/AppLayout';
 import { CMMC_DOMAINS, ALL_CONTROLS, TOTAL_CONTROLS, MONITORED_COUNT } from '../data/cmmcAllControls';
 
 const DOMAIN_COLORS: Record<string, string> = {
-  blue: 'border-blue-500/40 bg-blue-500/5',
-  purple: 'border-purple-500/40 bg-purple-500/5',
-  green: 'border-green-500/40 bg-green-500/5',
-  orange: 'border-orange-500/40 bg-orange-500/5',
-  cyan: 'border-cyan-500/40 bg-cyan-500/5',
-  red: 'border-red-500/40 bg-red-500/5',
-  yellow: 'border-yellow-500/40 bg-yellow-500/5',
-  indigo: 'border-indigo-500/40 bg-indigo-500/5',
-  pink: 'border-pink-500/40 bg-pink-500/5',
-  teal: 'border-teal-500/40 bg-teal-500/5',
-  amber: 'border-amber-500/40 bg-amber-500/5',
-  lime: 'border-lime-500/40 bg-lime-500/5',
-  violet: 'border-violet-500/40 bg-violet-500/5',
-  emerald: 'border-emerald-500/40 bg-emerald-500/5',
+  blue: 'border-blue-500/60 bg-blue-500/15',
+  purple: 'border-purple-500/60 bg-purple-500/15',
+  green: 'border-green-500/60 bg-green-500/15',
+  orange: 'border-orange-500/60 bg-orange-500/15',
+  cyan: 'border-cyan-500/60 bg-cyan-500/15',
+  red: 'border-red-500/60 bg-red-500/15',
+  yellow: 'border-yellow-500/60 bg-yellow-500/15',
+  indigo: 'border-indigo-500/60 bg-indigo-500/15',
+  pink: 'border-pink-500/60 bg-pink-500/15',
+  teal: 'border-teal-500/60 bg-teal-500/15',
+  amber: 'border-amber-500/60 bg-amber-500/15',
+  lime: 'border-lime-500/60 bg-lime-500/15',
+  violet: 'border-violet-500/60 bg-violet-500/15',
+  emerald: 'border-emerald-500/60 bg-emerald-500/15',
 };
 
 const DOMAIN_BADGE: Record<string, string> = {

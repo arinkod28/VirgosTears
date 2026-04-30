@@ -27,9 +27,9 @@ export default function EvidencePanel({ controlId, onClose }: Props) {
   }, [controlId]);
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-navy-800 border border-navy-600 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-navy-600">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div className="bg-navy-800/95 border border-navy-500/60 rounded-xl max-w-2xl w-full max-h-[80vh] overflow-y-auto backdrop-blur-sm">
+        <div className="flex items-center justify-between p-6 border-b border-navy-500/40">
           <div>
             <p className="text-xs text-slate-500 font-mono">{controlId}</p>
             <h2 className="text-lg font-semibold">{control?.title}</h2>
