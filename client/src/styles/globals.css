@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Existing dashboard tokens */
+  --bg-primary: #0a0f1e;
+  --bg-secondary: #111827;
+  --bg-card: #1a2332;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --border: 215 31% 20%;
+
+  /* Shadcn component tokens (dark navy theme) */
+  --background: 222 47% 8%;
+  --foreground: 210 40% 96%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 215 31% 15%;
+  --secondary-foreground: 210 40% 96%;
+  --muted: 215 31% 15%;
+  --muted-foreground: 215 20% 65%;
+  --accent: 215 31% 15%;
+  --accent-foreground: 210 40% 96%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 215 31% 20%;
+  --ring: 217 91% 60%;
+  --radius: 0.5rem;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+/* Status badge colors */
+.status-pass { color: #22c55e; }
+.status-fail { color: #ef4444; }
+.status-warning { color: #f59e0b; }
+.status-error { color: #94a3b8; }
+.status-pending { color: #64748b; }
