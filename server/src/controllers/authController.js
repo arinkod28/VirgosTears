@@ -1,41 +1,27 @@
-const { getGraphToken } = require('../config/azure');
+// Mock tenant — always reports as connected so the UI skips the connection gate
+const MOCK_TENANT = 'Contoso Defense Corp';
 
-let connectionStatus = { connected: false, tenant: null, testedAt: null };
+let connectionStatus = {
+  connected: true,
+  tenant: MOCK_TENANT,
+  testedAt: new Date().toISOString(),
+};
 
 /**
- * Test Azure connection by attempting to acquire a Graph token
+ * Returns mock connection success — no Azure credentials required
  */
-async function testConnection(req, res, next) {
-  try {
-    const token = await getGraphToken();
+async function testConnection(req, res) {
+  connectionStatus = {
+    connected: true,
+    tenant: MOCK_TENANT,
+    testedAt: new Date().toISOString(),
+  };
 
-    // Quick validation — fetch tenant info
-    const response = await fetch('https://graph.microsoft.com/v1.0/organization', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Azure returned ${response.status}`);
-    }
-
-    const orgData = await response.json();
-    const tenant = orgData.value?.[0]?.displayName || 'Unknown';
-
-    connectionStatus = {
-      connected: true,
-      tenant,
-      testedAt: new Date().toISOString(),
-    };
-
-    res.json({
-      success: true,
-      tenant,
-      message: `Connected to Azure tenant: ${tenant}`,
-    });
-  } catch (error) {
-    connectionStatus = { connected: false, tenant: null, testedAt: new Date().toISOString() };
-    next(error);
-  }
+  res.json({
+    success: true,
+    tenant: MOCK_TENANT,
+    message: `Connected to Azure tenant: ${MOCK_TENANT}`,
+  });
 }
 
 /**

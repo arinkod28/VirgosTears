@@ -7,7 +7,6 @@ interface Props {
   findings: string[];
   evidenceHash: string | null;
   lastScanned: string | null;
-  connected: boolean;
   onRequestEvidence: (controlId: string) => void;
 }
 
@@ -19,16 +18,12 @@ const STATUS_CONFIG: Record<ControlStatus, { label: string; bg: string; dot: str
   pending: { label: 'PENDING', bg: 'bg-slate-500/10 border-slate-500/30', dot: 'bg-slate-600' },
 };
 
-/**
- * Individual control card - shows status, findings, and evidence hash.
- */
 export default function ControlCard({
   control,
   status,
   findings,
   evidenceHash,
   lastScanned,
-  connected,
   onRequestEvidence,
 }: Props) {
   const config = STATUS_CONFIG[status];
@@ -58,7 +53,7 @@ export default function ControlCard({
         <div className="mb-3 space-y-1">
           {findings.map((finding, index) => (
             <p key={index} className="text-xs text-slate-300">
-              - {finding}
+              &ndash; {finding}
             </p>
           ))}
         </div>
@@ -67,18 +62,16 @@ export default function ControlCard({
       <div className="flex items-center justify-between pt-3 border-t border-white/5">
         {evidenceHash ? (
           <code className="text-[10px] text-slate-500 font-mono truncate max-w-[200px]">
-            SHA-256: {evidenceHash.slice(0, 16)}...
+            SHA-256: {evidenceHash.slice(0, 16)}&hellip;
           </code>
         ) : (
-          <span className="text-[10px] text-slate-600">
-            {connected ? 'No evidence collected' : 'Connect Azure to collect evidence'}
-          </span>
+          <span className="text-[10px] text-slate-600">No evidence collected yet</span>
         )}
         <button
           onClick={() => onRequestEvidence(control.id)}
           className="text-xs text-blue-400 hover:text-blue-300 transition-colors"
         >
-          {connected ? 'Fetch Evidence ->' : 'View Setup Option ->'}
+          View Evidence &rarr;
         </button>
       </div>
 

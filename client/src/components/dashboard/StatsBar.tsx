@@ -3,20 +3,13 @@ import type { DashboardStats } from '../../types';
 
 interface Props {
   stats: DashboardStats | null;
-  connected?: boolean;
 }
 
-/**
- * Top-level compliance stats bar: total controls, pass/fail/warn counts, compliance %
- * TODO: Add animated progress ring for compliance rate
- */
-export default function StatsBar({ stats, connected = true }: Props) {
+export default function StatsBar({ stats }: Props) {
   if (!stats) {
     return (
-      <div className="bg-navy-700 border border-navy-600 rounded-lg p-4 text-sm text-slate-400">
-        {connected
-          ? 'No scan data yet. Run a scan to get started.'
-          : 'Azure is not connected yet. Connect a tenant to populate live compliance stats.'}
+      <div className="bg-navy-700 border border-navy-600 rounded-lg p-4 text-sm text-slate-400 animate-pulse">
+        Loading compliance data&hellip;
       </div>
     );
   }

@@ -1,10 +1,7 @@
 import { useState, useCallback } from 'react';
 import { scan, auth } from '../lib/api';
-import type { DashboardStats, ScanResult, ConnectionStatus } from '../types';
+import type { DashboardStats, ScanResult, ScanSnapshot, ConnectionStatus } from '../types';
 
-/**
- * Hook for managing Azure connection state
- */
 export function useAzureConnection() {
   const [status, setStatus] = useState<ConnectionStatus>({
     connected: false,
@@ -33,16 +30,23 @@ export function useAzureConnection() {
       const s = await auth.status();
       setStatus(s);
     } catch {
-      // Silently fail — connection may not be set up yet
+      // Silently fail — backend may not be ready yet
     }
   }, []);
 
   return { status, loading, error, connect, checkStatus };
 }
 
-/**
- * Hook for running scans and fetching dashboard data
- */
+function snapshotsToResults(snapshots: ScanSnapshot[]): ScanResult[] {
+  return snapshots.map((s) => ({
+    controlId: s.control_id,
+    status: s.status,
+    findings: JSON.parse(s.findings || '[]'),
+    evidenceHash: s.evidence_hash,
+    timestamp: s.scanned_at,
+  }));
+}
+
 export function useDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [results, setResults] = useState<ScanResult[]>([]);
@@ -58,13 +62,21 @@ export function useDashboard() {
     }
   }, []);
 
+  const fetchLatest = useCallback(async () => {
+    try {
+      const { snapshots } = await scan.latest();
+      setResults(snapshotsToResults(snapshots));
+    } catch {
+      // Silently fail on initial load
+    }
+  }, []);
+
   const runScan = useCallback(async () => {
     setScanning(true);
     setError(null);
     try {
       const response = await scan.run();
       setResults(response.results);
-      // Refresh stats after scan
       await fetchStats();
     } catch (err: any) {
       setError(err.message);
@@ -73,5 +85,5 @@ export function useDashboard() {
     }
   }, [fetchStats]);
 
-  return { stats, results, scanning, error, fetchStats, runScan };
+  return { stats, results, scanning, error, fetchStats, fetchLatest, runScan };
 }

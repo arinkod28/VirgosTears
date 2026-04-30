@@ -5,15 +5,10 @@ import type { ScanResult } from '../../types';
 
 interface Props {
   results: ScanResult[];
-  connected: boolean;
   onRequestEvidence: (controlId: string) => void;
 }
 
-/**
- * Grid of all 6 CMMC control cards
- */
-export default function ControlGrid({ results, connected, onRequestEvidence }: Props) {
-  // Build a lookup map from scan results
+export default function ControlGrid({ results, onRequestEvidence }: Props) {
   const resultMap = new Map(results.map((r) => [r.controlId, r]));
 
   return (
@@ -28,7 +23,6 @@ export default function ControlGrid({ results, connected, onRequestEvidence }: P
             findings={result?.findings || []}
             evidenceHash={result?.evidenceHash || null}
             lastScanned={result?.timestamp || null}
-            connected={connected}
             onRequestEvidence={onRequestEvidence}
           />
         );

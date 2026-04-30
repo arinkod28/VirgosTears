@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import AppLayout from '../components/layout/AppLayout';
-import AzureConnect from '../components/auth/AzureConnect';
 import StatsBar from '../components/dashboard/StatsBar';
 import ControlGrid from '../components/controls/ControlGrid';
 import ChatPanel from '../components/chat/ChatPanel';
@@ -8,9 +7,6 @@ import EvidencePanel from '../components/evidence/EvidencePanel';
 import { useAzureConnection, useDashboard } from '../hooks/useDashboard';
 import { useChat } from '../hooks/useChat';
 
-/**
- * Main dashboard page - the single-page app entry point.
- */
 export default function DashboardPage() {
   const azure = useAzureConnection();
   const dashboard = useDashboard();
@@ -21,22 +17,18 @@ export default function DashboardPage() {
 
   useEffect(() => {
     azure.checkStatus();
+    dashboard.fetchStats();
+    dashboard.fetchLatest();
   }, []);
 
-  useEffect(() => {
-    if (azure.status.connected) {
-      dashboard.fetchStats();
-    }
-  }, [azure.status.connected]);
-
   return (
-    <AppLayout connected={azure.status.connected} tenant={azure.status.tenant}>
+    <AppLayout tenant={azure.status.tenant || 'Contoso Defense Corp'}>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Compliance Dashboard</h1>
             <p className="text-sm text-slate-400 mt-1">
-              CMMC Level 2 - 6 Controls - Microsoft Azure
+              CMMC Level 2 &mdash; 6 Controls &mdash; Microsoft Azure
             </p>
           </div>
           <div className="flex gap-3">
@@ -48,7 +40,7 @@ export default function DashboardPage() {
             </button>
             <button
               onClick={dashboard.runScan}
-              disabled={dashboard.scanning || !azure.status.connected}
+              disabled={dashboard.scanning}
               className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 rounded-lg text-sm font-medium transition-colors"
             >
               {dashboard.scanning ? 'Scanning...' : 'Run Scan'}
@@ -56,22 +48,12 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {!azure.status.connected && (
-          <AzureConnect
-            status={azure.status}
-            loading={azure.loading}
-            error={azure.error}
-            onConnect={azure.connect}
-          />
-        )}
-
-        <StatsBar stats={dashboard.stats} connected={azure.status.connected} />
+        <StatsBar stats={dashboard.stats} />
 
         <div className={`grid gap-6 ${showChat ? 'grid-cols-3' : 'grid-cols-1'}`}>
           <div className={showChat ? 'col-span-2' : ''}>
             <ControlGrid
               results={dashboard.results}
-              connected={azure.status.connected}
               onRequestEvidence={(id) => setEvidenceControlId(id)}
             />
           </div>
@@ -82,8 +64,6 @@ export default function DashboardPage() {
                 messages={chat.messages}
                 loading={chat.loading}
                 error={chat.error}
-                connected={azure.status.connected}
-                onConnect={azure.connect}
                 onSend={chat.sendMessage}
                 onClear={chat.clearChat}
               />
@@ -101,8 +81,6 @@ export default function DashboardPage() {
       {evidenceControlId && (
         <EvidencePanel
           controlId={evidenceControlId}
-          connected={azure.status.connected}
-          onConnect={azure.connect}
           onClose={() => setEvidenceControlId(null)}
         />
       )}

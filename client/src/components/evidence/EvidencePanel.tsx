@@ -1,45 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { evidence } from '../../lib/api';
 import type { EvidenceResponse } from '../../types';
 import { CONTROLS } from '../../lib/controls';
 
 interface Props {
   controlId: string;
-  connected?: boolean;
-  onConnect?: () => void;
   onClose: () => void;
 }
 
-/**
- * Evidence detail panel - fetches live evidence and displays raw data plus hash.
- */
-export default function EvidencePanel({
-  controlId,
-  connected = true,
-  onConnect,
-  onClose,
-}: Props) {
+export default function EvidencePanel({ controlId, onClose }: Props) {
   const [data, setData] = useState<EvidenceResponse | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showRaw, setShowRaw] = useState(false);
 
   const control = CONTROLS[controlId];
 
-  const fetchEvidence = async () => {
-    if (!connected) return;
-
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await evidence.get(controlId);
-      setData(result);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    let cancelled = false;
+    evidence
+      .get(controlId)
+      .then((result) => { if (!cancelled) setData(result); })
+      .catch((err) => { if (!cancelled) setError(err.message); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [controlId]);
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
@@ -52,43 +37,16 @@ export default function EvidencePanel({
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-white transition-colors text-xl"
+            className="text-slate-400 hover:text-white transition-colors text-xl leading-none"
           >
-            x
+            &times;
           </button>
         </div>
 
         <div className="p-6">
-          {!data && !loading && (
-            <div className="text-center py-8">
-              <p className="text-sm text-slate-400 mb-4">
-                {connected
-                  ? 'Fetch live evidence from Azure for this control.'
-                  : 'This control is visible now, but live evidence requires an Azure connection.'}
-              </p>
-              <div className="flex items-center justify-center gap-3">
-                <button
-                  onClick={fetchEvidence}
-                  disabled={!connected}
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 rounded-lg text-sm font-medium transition-colors"
-                >
-                  Fetch Evidence from Azure
-                </button>
-                {!connected && onConnect && (
-                  <button
-                    onClick={onConnect}
-                    className="px-6 py-2.5 bg-navy-700 hover:bg-navy-600 border border-navy-600 rounded-lg text-sm font-medium transition-colors"
-                  >
-                    Connect Azure Tenant
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
           {loading && (
             <div className="text-center py-8">
-              <p className="text-sm text-slate-400 animate-pulse">Querying Azure APIs...</p>
+              <p className="text-sm text-slate-400 animate-pulse">Fetching evidence...</p>
             </div>
           )}
 
@@ -101,9 +59,7 @@ export default function EvidencePanel({
           {data && (
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <span className={`text-sm font-mono font-bold status-${data.status}`}>
-                  {data.status.toUpperCase()}
-                </span>
+                <StatusBadge status={data.status} />
                 <span className="text-xs text-slate-500">{data.recordCount} records retrieved</span>
               </div>
 
@@ -111,7 +67,7 @@ export default function EvidencePanel({
                 <p className="text-xs text-slate-500 uppercase tracking-wider mb-2">Findings</p>
                 {data.findings.map((finding, index) => (
                   <p key={index} className="text-sm text-slate-300 mb-1">
-                    - {finding}
+                    &ndash; {finding}
                   </p>
                 ))}
               </div>
@@ -123,7 +79,7 @@ export default function EvidencePanel({
                 <code className="text-xs text-green-400 font-mono break-all">
                   {data.evidenceHash}
                 </code>
-                <p className="text-[10px] text-slate-600 mt-2">Timestamp: {data.timestamp}</p>
+                <p className="text-[10px] text-slate-600 mt-2">Collected: {new Date(data.timestamp).toLocaleString()}</p>
               </div>
 
               <div>
@@ -144,5 +100,21 @@ export default function EvidencePanel({
         </div>
       </div>
     </div>
+  );
+}
+
+const STATUS_COLORS: Record<string, string> = {
+  pass: 'text-green-400 bg-green-500/10 border-green-500/30',
+  fail: 'text-red-400 bg-red-500/10 border-red-500/30',
+  warning: 'text-amber-400 bg-amber-500/10 border-amber-500/30',
+  error: 'text-slate-400 bg-slate-500/10 border-slate-500/30',
+};
+
+function StatusBadge({ status }: { status: string }) {
+  const cls = STATUS_COLORS[status] || STATUS_COLORS.error;
+  return (
+    <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded border ${cls}`}>
+      {status.toUpperCase()}
+    </span>
   );
 }

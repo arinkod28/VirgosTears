@@ -1,46 +1,14 @@
-const { getGraphToken, getArmToken, SUBSCRIPTION_ID } = require('../config/azure');
-const { CONTROLS } = require('../config/controls');
-
-const GRAPH_BASE = 'https://graph.microsoft.com/v1.0';
-const ARM_BASE = 'https://management.azure.com';
+const { getMockData } = require('../data/mockAzureData');
+const { CONTROLS, CONTROL_IDS } = require('../config/controls');
 
 /**
- * Fetch data from an Azure API endpoint
- */
-async function fetchAzure(apiType, endpoint) {
-  const token = apiType === 'graph' ? await getGraphToken() : await getArmToken();
-  const baseUrl = apiType === 'graph' ? GRAPH_BASE : ARM_BASE;
-  const url = `${baseUrl}${endpoint}`;
-
-  const response = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(`Azure API error (${response.status}): ${errorBody}`);
-  }
-
-  return response.json();
-}
-
-/**
- * Fetch data for a specific CMMC control
+ * Fetch data for a specific CMMC control from the mock data layer.
+ * The mock data mirrors the exact structure Azure Graph/ARM APIs return,
+ * so all downstream evaluators, hashers, and snapshot stores work unchanged.
  */
 async function fetchControlData(controlId) {
-  const control = CONTROLS[controlId];
-  if (!control) throw new Error(`Unknown control: ${controlId}`);
-
-  const endpoint =
-    typeof control.endpoint === 'function'
-      ? control.endpoint(SUBSCRIPTION_ID)
-      : control.endpoint;
-
-  const data = await fetchAzure(control.apiType, endpoint);
-  return data;
+  if (!CONTROLS[controlId]) throw new Error(`Unknown control: ${controlId}`);
+  return getMockData(controlId);
 }
 
 /**
@@ -49,7 +17,7 @@ async function fetchControlData(controlId) {
 async function runFullScan() {
   const results = {};
 
-  for (const [controlId, control] of Object.entries(CONTROLS)) {
+  for (const controlId of CONTROL_IDS) {
     try {
       const data = await fetchControlData(controlId);
       results[controlId] = {
@@ -69,4 +37,4 @@ async function runFullScan() {
   return results;
 }
 
-module.exports = { fetchAzure, fetchControlData, runFullScan };
+module.exports = { fetchControlData, runFullScan };

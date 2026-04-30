@@ -5,24 +5,11 @@ interface Props {
   messages: ChatMessage[];
   loading: boolean;
   error: string | null;
-  connected?: boolean;
-  onConnect?: () => void;
   onSend: (message: string) => void;
   onClear: () => void;
 }
 
-/**
- * AI chat panel - inline assistant for compliance questions.
- */
-export default function ChatPanel({
-  messages,
-  loading,
-  error,
-  connected = true,
-  onConnect,
-  onSend,
-  onClear,
-}: Props) {
+export default function ChatPanel({ messages, loading, error, onSend, onClear }: Props) {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +19,7 @@ export default function ChatPanel({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!connected || !input.trim() || loading) return;
+    if (!input.trim() || loading) return;
     onSend(input.trim());
     setInput('');
   };
@@ -67,31 +54,13 @@ export default function ChatPanel({
               {quickPrompts.map((prompt) => (
                 <button
                   key={prompt}
-                  onClick={() => connected && onSend(prompt)}
-                  disabled={!connected}
-                  className="block w-full text-left text-xs text-blue-400 hover:text-blue-300 disabled:text-slate-500 disabled:cursor-not-allowed bg-navy-700 rounded-lg p-3 transition-colors"
+                  onClick={() => onSend(prompt)}
+                  className="block w-full text-left text-xs text-blue-400 hover:text-blue-300 bg-navy-700 rounded-lg p-3 transition-colors"
                 >
-                  "{prompt}"
+                  &ldquo;{prompt}&rdquo;
                 </button>
               ))}
             </div>
-          </div>
-        )}
-
-        {!connected && (
-          <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg p-4 text-sm text-amber-200">
-            <p className="mb-3">
-              The AI assistant is available here, but it needs an Azure connection before it can
-              retrieve live compliance evidence.
-            </p>
-            {onConnect && (
-              <button
-                onClick={onConnect}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-medium text-white transition-colors"
-              >
-                Connect Azure Tenant
-              </button>
-            )}
           </div>
         )}
 
@@ -115,7 +84,7 @@ export default function ChatPanel({
         {loading && (
           <div className="flex justify-start">
             <div className="bg-navy-700 rounded-lg p-3 text-sm text-slate-400">
-              <span className="animate-pulse">Querying Azure and analyzing...</span>
+              <span className="animate-pulse">Analyzing compliance data...</span>
             </div>
           </div>
         )}
@@ -135,17 +104,13 @@ export default function ChatPanel({
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={
-              connected
-                ? 'Ask about a control, request evidence...'
-                : 'Connect Azure to ask for live evidence'
-            }
+            placeholder="Ask about a control, request evidence..."
             className="flex-1 bg-navy-700 border border-navy-600 rounded-lg px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition-colors"
-            disabled={loading || !connected}
+            disabled={loading}
           />
           <button
             type="submit"
-            disabled={loading || !input.trim() || !connected}
+            disabled={loading || !input.trim()}
             className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:bg-slate-700 disabled:text-slate-500 rounded-lg text-sm font-medium transition-colors"
           >
             Send
