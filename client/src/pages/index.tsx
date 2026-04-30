@@ -73,7 +73,7 @@ export default function DashboardPage() {
 
         {dashboard.error && (
           <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-sm text-red-400">
-            {dashboard.error}
+            Scan error: {dashboard.error}
           </div>
         )}
       </div>
