@@ -25,7 +25,7 @@ export default function StatsBar({ stats }: Props) {
   return (
     <div className="grid grid-cols-5 gap-4">
       {cards.map((card) => (
-        <div key={card.label} className="bg-navy-800 rounded-lg p-4 border border-navy-500">
+        <div key={card.label} className="bg-navy-700 rounded-lg p-4 border border-navy-400">
           <p className="text-xs text-slate-400 uppercase tracking-wider">{card.label}</p>
           <p className={`text-2xl font-bold mt-1 ${card.color}`}>{card.value}</p>
         </div>
